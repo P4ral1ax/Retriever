@@ -2,19 +2,36 @@
 import socket
 import base64
 import threading
+import requests
 from datetime import datetime
 
-
+url = "https://discord.com/api/webhooks/892954300492431381/JtSllHcnrIcvrK-txc9AC9CNj8zqCh6Xx-4UOYRQ7VEB8qBONU7aIzsjCB-AWU4x11wz"
 port = 8000
 
 def fwd_discord(msg):
-    
-    pass
+    split_msg = msg.strip(" ") 
+    split_msg = msg.split(":")
+    formatted_msg = (f"{split_msg[0]} | {split_msg[1]}:{split_msg[2]}")
+    print(f"Sending : {formatted_msg}")
+
+    post_thing = {}
+    data = {
+        "content" : formatted_msg,
+        "username" : "Retriever"
+    }
+    result = requests.post(url, json = data)
+    try:
+        result.raise_for_status()
+    except requests.exceptions.HTTPError as err:
+        print(err)
+    else:
+        print("Payload delivered successfully, code {}.".format(result.status_code))
 
 def handle(client_sock, addr):
     msg_from_client = client_sock.recv(1024)
     msg = msg_from_client.decode()
-    print(f"{addr[0]} : {msg}")
+    prnt_msg = (f"{addr[0]} : {msg}")
+    fwd_discord(prnt_msg)
     return()
 
 def main():
