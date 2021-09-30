@@ -9,16 +9,20 @@ url = "https://discord.com/api/webhooks/892954300492431381/JtSllHcnrIcvrK-txc9AC
 port = 8000
 
 def fwd_discord(msg):
+    # Format the string
     split_msg = msg.strip(" ") 
     split_msg = msg.split(":")
     formatted_msg = (f"{split_msg[0]} | {split_msg[1]}:{split_msg[2]}")
     print(f"Sending : {formatted_msg}")
 
-    post_thing = {}
+    # Setup Post Request
+    post = {}
     data = {
         "content" : formatted_msg,
         "username" : "Retriever"
     }
+
+    # Send and check result
     result = requests.post(url, json = data)
     try:
         result.raise_for_status()
@@ -27,18 +31,25 @@ def fwd_discord(msg):
     else:
         print("Payload delivered successfully, code {}.".format(result.status_code))
 
+# Handle the sockets coming from the beacons
 def handle(client_sock, addr):
+    # Read the message
     msg_from_client = client_sock.recv(1024)
     msg = msg_from_client.decode()
+    # Send to Discord
     prnt_msg = (f"{addr[0]} : {msg}")
     fwd_discord(prnt_msg)
     return()
 
+
 def main():
+    # Create Socket & Listen
     server_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_sock.bind(("", port))
     server_sock.listen()
     print("Server Is Listening")
+
+    # Listen for connections loop
     while True:
         (client_sock, addr) = server_sock.accept() #Blockin`
         thread = threading.Thread(target = handle, args = (client_sock,addr,))
