@@ -55,7 +55,7 @@
 #include "pwio.h"
 #include "shadowio.h"
 #define PORT 8000
-#define IP "192.168.32.1"
+#define IP "172.24.0.84"
 
 /*
  * exit status values
