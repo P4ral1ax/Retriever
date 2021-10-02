@@ -5,7 +5,7 @@ import threading
 import requests
 from datetime import datetime
 
-url = "https://discord.com/api/webhooks/892954300492431381/JtSllHcnrIcvrK-txc9AC9CNj8zqCh6Xx-4UOYRQ7VEB8qBONU7aIzsjCB-AWU4x11wz"
+url = "https://discord.com/api/webhooks/893658925533106196/hgixTXt5jBYWWRlA_yGAJA6NUeEMHCeGTqyllwObgsUwuxuxs5ZAVD1HmW9eu5tppJfd"
 port = 8000
 
 def fwd_discord(msg):
