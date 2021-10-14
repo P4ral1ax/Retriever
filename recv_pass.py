@@ -3,10 +3,14 @@ import socket
 import base64
 import threading
 import requests
+import os
 from datetime import datetime
+from dotenv import load_dotenv
+load_dotenv()
 
-url = "https://discord.com/api/webhooks/893658925533106196/hgixTXt5jBYWWRlA_yGAJA6NUeEMHCeGTqyllwObgsUwuxuxs5ZAVD1HmW9eu5tppJfd"
+url=os.getenv("WEBHOOK")
 port = 8000
+
 
 def fwd_discord(msg):
     # Format the string
