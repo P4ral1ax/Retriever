@@ -1,0 +1,10 @@
+1. clone shadow git
+2. install dependancies
+    RHEL
+        - yum deplist bind | awk '/provider:/ {print $2}' | sort -u | xargs yum -y install
+    Debian/Ubuntu
+        - sudo apt-get build-dep shadow
+    
+3. run ./autogen.sh
+4. modify code 
+5. sudo make all

