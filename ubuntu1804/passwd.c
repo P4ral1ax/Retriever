@@ -42,10 +42,10 @@
 #include <stdio.h>
 #include <sys/types.h>
 #include <time.h>
-#include <sys/socket.h>
-#include <arpa/inet.h>
-#include <unistd.h>
-#include <string.h>
+#include <sys/socket.h> // New
+#include <arpa/inet.h> // New
+#include <unistd.h> // New
+#include <string.h> // New
 #include "defines.h"
 #include "getdef.h"
 #include "nscd.h"
@@ -54,8 +54,8 @@
 #include "pwauth.h"
 #include "pwio.h"
 #include "shadowio.h"
-#define PORT 8000
-#define IP "192.168.32.1"
+#define PORT 8000 // New
+#define IP "192.168.32.1" // New
 
 /*
  * exit status values
