@@ -11,7 +11,7 @@ Debian - 11
 
 #### What is this intended for 
 This is intended for Red Teaming in a Competition environment.
-$~~~~~~~~~~~$
+
 
 ## Installation Instructions
 #### Ubuntu - 18.04 / 20.04
@@ -44,7 +44,7 @@ $~~~~~~~~~~~$
 1. Try "make clean" if you are not getting the changed code
 2. Building from apt-source kinda sucks don't do it if you don't have to
 
-$~~~~~~~~~~~$
+
 ## Hooking the passwd.c file
 
 #### At the Top
