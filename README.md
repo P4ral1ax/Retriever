@@ -5,9 +5,9 @@ This is a basic Linux binary shim on the passwd binary from the shadow package. 
 
 #### What does it work on? (Tested)
 
-Ubuntu - 18.04, 20.04
-Centos - 8
-Debian - 11
+Ubuntu - 18.04, 20.04 <br />  
+Centos - 8 <br />  
+Debian - 11 <br />  
 
 #### What is this intended for 
 This is intended for Red Teaming in a Competition environment.
