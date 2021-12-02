@@ -19,7 +19,10 @@ fi
 
 ## Get dependancies and autogen ##
 sudo apt install -y git make 
+sudo apt install -y autoconf autopoint libtool xsltproc libselinux1-dev libsemanage1-dev bison byacc python3-pip
+sudo pip3 install python-dotenv
 sudo apt-get build-dep -y shadow
+touch .env
 git clone https://github.com/shadow-maint/shadow
 cd shadow
 ./autogen.sh
