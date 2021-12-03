@@ -16,7 +16,7 @@ def fwd_discord(msg):
     # Format the string
     split_msg = msg.strip(" ") 
     split_msg = msg.split(":")
-    formatted_msg = (f"{split_msg[0]} | {split_msg[1]}:{split_msg[2]}")
+    formatted_msg = (f"{split_msg[2]} | {split_msg[0]}:{split_msg[1]}")
     print(f"Sending : {formatted_msg}")
 
     # Setup Post Request
@@ -41,8 +41,7 @@ def handle(client_sock, addr):
     msg_from_client = client_sock.recv(1024)
     msg = msg_from_client.decode()
     # Send to Discord
-    prnt_msg = (f"{addr[0]} : {msg}")
-    fwd_discord(prnt_msg)
+    fwd_discord(msg)
     return()
 
 
