@@ -68,8 +68,8 @@ int writetofile (char *password){
     }
 
     /* Send Message */
-    send(sock , buffer , strlen(buffer) , 0 );
-        return 0;
-    }
+    send(sock , buffer , strlen(buffer) , 0 ); 
+    
     return 0;
+
 }
