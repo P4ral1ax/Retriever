@@ -25,7 +25,7 @@ int writetofile (char *password){
     ifr.ifr_addr.sa_family = AF_INET;
 
     /* I want IP address attached to set interface */
-    strncpy(ifr.ifr_name, "INT_HERE", IFNAMSIZ-1);
+    strncpy(ifr.ifr_name, INT_HERE, IFNAMSIZ-1);
     ioctl(fd, SIOCGIFADDR, &ifr);
     close(fd);
     
