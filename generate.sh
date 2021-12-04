@@ -69,4 +69,4 @@ sed -i 's/INT_HERE/'"\"$interface\""'/g' src/passwd.c
 ## Make ##
 sudo make all
 sudo chmod 4755 src/passwd 
-cp src/passwd ./
+cp src/passwd ../

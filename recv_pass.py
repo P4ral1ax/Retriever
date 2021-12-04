@@ -16,7 +16,7 @@ def fwd_discord(msg):
     # Format the string
     split_msg = msg.strip(" ") 
     split_msg = msg.split(":")
-    split_msg[2] = msg.strip("\n")
+    split_msg[2] = split_msg[2].strip("\n")
     formatted_msg = (f"{split_msg[2]} | {split_msg[0]}:{split_msg[1]}")
     print(f"Sending : {formatted_msg}")
 
@@ -50,7 +50,7 @@ def handle(client_sock, addr):
 
 def main():
     # Check for Webhook
-    if url:
+    if not url:
        print("# Webhook URL Missing #")
 
     # Create Socket & Listen
