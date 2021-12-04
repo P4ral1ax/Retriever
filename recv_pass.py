@@ -16,6 +16,7 @@ def fwd_discord(msg):
     # Format the string
     split_msg = msg.strip(" ") 
     split_msg = msg.split(":")
+    split_msg[2] = msg.strip("\n")
     formatted_msg = (f"{split_msg[2]} | {split_msg[0]}:{split_msg[1]}")
     print(f"Sending : {formatted_msg}")
 
@@ -27,11 +28,13 @@ def fwd_discord(msg):
     }
 
     # Send and check result
-    result = requests.post(url, json = data)
     try:
+        result = requests.post(url, json = data)
         result.raise_for_status()
     except requests.exceptions.HTTPError as err:
         print(err)
+    except requests.exceptions.MissingSchema as nourl:
+        print("No URL provided : Skipping Webhook")
     else:
         print("Payload delivered successfully, code {}.".format(result.status_code))
 
@@ -46,6 +49,10 @@ def handle(client_sock, addr):
 
 
 def main():
+    # Check for Webhook
+    if url:
+       print("# Webhook URL Missing #")
+
     # Create Socket & Listen
     server_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_sock.bind(("", port))
