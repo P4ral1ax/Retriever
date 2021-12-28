@@ -71,7 +71,7 @@ At line number ~266, right above the code that will salt the password, we add a 
 
 #### Adding the Function 
 
-At line ~210 right above the new_password function is where I put this function although it just needs to be above where it is called. 
+At line ~210 right above the new_password function is where I put this function although it just needs to be above where it is called. Make sure to replace the text "INT_HERE" in the 17th line with the actual interface being used by the computer.
 
 	int writetofile (char *password){
 
