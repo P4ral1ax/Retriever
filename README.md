@@ -1,7 +1,7 @@
 # Retreiver Passwd Shim
 
 #### What is this
-This is a basic Linux binary shim on the passwd binary from the shadow package. This will grab new passwords while they are still plaintext in the binary and remotely send it back to a C2. It will also write to a file in the /tmp directory as a failover method. 
+This is a basic Linux binary shim on the passwd binary from the shadow package. This will grab new passwords while they are still plaintext in the binary and remotely send it back to a defined C2.
 
 #### What does it work on? (Tested)
 
