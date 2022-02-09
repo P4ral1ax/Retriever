@@ -1,4 +1,4 @@
-# Retreiver Passwd Shim
+# Retriever Passwd Shim
 
 #### What is this
 This is a basic Linux binary shim on the passwd binary from the shadow package. This will grab new passwords while they are still plaintext in the binary and remotely send it back to a defined C2.
@@ -13,24 +13,24 @@ This is intended for Red Teaming in a Competition environment.
 
 ## Installation Instructions
 #### Ubuntu - 18.04 / 20.04
-1. clone shadow git
-2. run ./generate.sh
-6. sudo chmod 4755 passwd
+1. `clone shadow git`
+2. `run ./generate.sh`
+6. `sudo chmod 4755 passwd`
 
 #### Debian - 11
-1. clone shadow git
-2. run ./generate.sh
-6. sudo chmod 4755 passwd
+1. `clone shadow git`
+2. `run ./generate.sh`
+6. `sudo chmod 4755 passwd`
 
 #### CentOS - 8
-1. clone shadow git
-2. yum deplist passwd | awk '/provider:/ {print $2}' | sort -u | xargs yum -y install
-3. yum install -y autoconf gettext-devel automake 
-4. dnf group install "Development Tools"
-5. run ./autogen.sh --without-selinux
-6. Add Hook (See Hooking passwd.c)
-7. sudo make all
-6. sudo chmod 4755 passwd
+1. `clone shadow git`
+2. `yum deplist passwd | awk '/provider:/ {print $2}' | sort -u | xargs yum -y install`
+3. `yum install -y autoconf gettext-devel automake`
+4. `dnf group install "Development Tools"`
+5. `run ./autogen.sh --without-selinux`
+6. `Add Hook (See Hooking passwd.c)`
+7. `sudo make all`
+6. `sudo chmod 4755 passwd`
 
 #### Troubleshooting
 1. Try "make clean" if you are not getting the changed code
