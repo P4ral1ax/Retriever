@@ -26,7 +26,6 @@ def xor_decrypt(inpString):
     for i in range(length):
         i_key = i % key_length
         inpString = (inpString[:i] + chr(ord(inpString[i]) ^ ord(key[i_key])) + inpString[i + 1:]);
-        print(inpString[i], end = "");
     return inpString;
 
 
@@ -79,7 +78,7 @@ def main():
     server_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_sock.bind(("", port))
     server_sock.listen()
-    print("Server Is Listening")
+    print(f"Server Is Listening\n    Key : {key}")
 
     # Listen for connections loop
     while True:
