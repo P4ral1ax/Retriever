@@ -21,8 +21,11 @@ def xor_decrypt(inpString):
  
     # perform XOR operation of key
     # with every character in string
+    key_length = len(key)
+
     for i in range(length):
-        inpString = (inpString[:i] + chr(ord(inpString[i]) ^ ord(key)) + inpString[i + 1:]);
+        i_key = i % key_length
+        inpString = (inpString[:i] + chr(ord(inpString[i]) ^ ord(key[i_key])) + inpString[i + 1:]);
         print(inpString[i], end = "");
     return inpString;
 
