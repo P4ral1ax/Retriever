@@ -11,7 +11,7 @@ load_dotenv()
 
 url=os.getenv("WEBHOOK")
 key=os.getenv("XOR_KEY", "bingus")
-port = 8000
+port=os.getenv("PORT",8000)
 
 # From GeeksForGeeks <3
 def xor_decrypt(inpString):
@@ -19,10 +19,8 @@ def xor_decrypt(inpString):
     # calculate length of input string
     length = len(inpString);
  
-    # perform XOR operation of key
-    # with every character in string
+    # perform XOR operation with key + cipher
     key_length = len(key)
-
     for i in range(length):
         i_key = i % key_length
         inpString = (inpString[:i] + chr(ord(inpString[i]) ^ ord(key[i_key])) + inpString[i + 1:]);
