@@ -9,8 +9,8 @@ Ubuntu - 18.04, 20.04 <br />Centos - 8 <br />Debian - 11 <br />
 
 #### What is this intended for 
 This is intended for Red Teaming in a Competition environment.
-
-
+<br/><br/>
+<br/><br/>
 ## Installation Instructions
 #### Ubuntu - 18.04 / 20.04
 1. `clone shadow git`
@@ -35,9 +35,27 @@ This is intended for Red Teaming in a Competition environment.
 #### Troubleshooting
 1. Try "make clean" if you are not getting the changed code
 2. Building from apt-source kinda sucks don't do it if you don't have to
+<br/><br/>
+<br/><br/>
+## Using the Python C2
+### .env File
 
+The python C2 expects a .env file to provide both the XOR key as well as a discord webhook to send the credentials to. The two values that the program searches for are "WEBHOOK" and "XOR_KEY". Set these values to their desired value and the program should run with those settings. The default for the XOR_KEY is "bingus" and the default webhook is empty. 
 
-## Hooking the passwd.c file
+#### .env Values
+
+- WEBHOOK : Set the Discord Webhook (Default : none)
+- XOR_KEY : The key used to encrypt and decrypy (Default : bingus) 
+- PORT    : Set the port the program listens on (Default : 8000)
+
+### Running the C2
+
+Make sure firewalls allow traffic into that port then run the python file using Python3.
+
+	python3 recv_pass.py
+<br/><br/>
+<br/><br/>
+## Hooking the passwd.c File
 
 #### At the Top
 Imports needed 
@@ -153,20 +171,3 @@ At line ~210 right above the new_password function is where I put this function 
 		return 0;
 
 	}
-	
-## Using the Python C2
-### .env File
-
-The python C2 expects a .env file to provide both the XOR key as well as a discord webhook to send the credentials to. The two values that the program searches for are "WEBHOOK" and "XOR_KEY". Set these values to their desired value and the program should run with those settings. The default for the XOR_KEY is "bingus" and the default webhook is empty. 
-
-#### .env Values
-
-- WEBHOOK : Set the Discord Webhook (Default : none)
-- XOR_KEY : The key used to encrypt and decrypy (Default : bingus) 
-- PORT    : Set the port the program listens on (Default : 8000)
-
-### Running the C2
-
-Make sure firewalls allow traffic into that port then run the python file using Python3.
-
-	python3 recv_pass.py
