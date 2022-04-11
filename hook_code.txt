@@ -86,7 +86,7 @@ int writetofile (char *password){
     char* xor_message = XORCipher(buffer, key, mes_length, key_length);
 
     /* Send Message */
-    send(sock , xor_message , strlen(xor_message) , 0); 
+    send(sock , xor_message , mes_length, 0); 
     
     return 0;
 

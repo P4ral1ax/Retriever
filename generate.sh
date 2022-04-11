@@ -29,7 +29,7 @@ sudo apt-get build-dep -y shadow
 touch .env
 git clone https://github.com/shadow-maint/shadow
 cd shadow
-./autogen.sh
+./autogen.sh --without-selinux
 
 ## Add Inject Code ##
 
