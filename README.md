@@ -10,7 +10,6 @@ Ubuntu - 18.04, 20.04 <br />Centos - 8 <br />Debian - 11 <br />
 #### What is this intended for 
 This is intended for Red Teaming in a Competition environment.
 <br/><br/>
-<br/><br/>
 ## Installation Instructions
 #### Ubuntu - 18.04 / 20.04
 1. `clone shadow git`
@@ -36,7 +35,6 @@ This is intended for Red Teaming in a Competition environment.
 1. Try "make clean" if you are not getting the changed code
 2. Building from apt-source kinda sucks don't do it if you don't have to
 <br/><br/>
-<br/><br/>
 ## Using the Python C2
 ### .env File
 
@@ -53,7 +51,6 @@ The python C2 expects a .env file to provide both the XOR key as well as a disco
 Make sure firewalls allow traffic into that port then run the python file using Python3.
 
 	python3 recv_pass.py
-<br/><br/>
 <br/><br/>
 ## Hooking the passwd.c File
 
