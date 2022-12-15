@@ -1,0 +1,4 @@
+1. Utilize Patch files 
+2. use config/args rather than User input
+3. Utilize Makefile
+4. Only Build needed file

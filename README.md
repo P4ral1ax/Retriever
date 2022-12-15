@@ -11,7 +11,7 @@ Ubuntu - 18.04, 20.04 <br />Centos - 8 <br />Debian - 11 <br />
 This is intended for Red Teaming in a Competition environment.
 <br/><br/>
 ## Installation Instructions
-#### Ubuntu - 18.04 / 20.04
+#### Ubuntu 
 1. `clone shadow git`
 2. `run ./generate.sh`
 3. `sudo chmod 4755 passwd`
@@ -42,9 +42,10 @@ The python C2 expects a .env file to provide both the XOR key as well as a disco
 
 #### .env Values
 
-- WEBHOOK : Set the Discord Webhook (Default : none)
-- XOR_KEY : The key used to encrypt and decrypy (Default : bingus) 
-- PORT    : Set the port the program listens on (Default : 8000)
+- WEBHOOK 	 : Set the Discord Webhook (Default : none)
+- XOR_KEY 	 : The key used to encrypt and decrypy (Default : bingus) 
+- PORT    	 : Set the port the program listens on (Default : 8000)
+- SAWMILLURL : Set the Sawmill URL (Default : none)
 
 ### Running the C2
 

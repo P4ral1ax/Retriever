@@ -1,12 +1,9 @@
 ### Simple Python Credential Stashing Server ###
-from errno import ENXIO
 import socket
-import base64
 import json
 import threading
 import requests
 import os
-from datetime import datetime
 from dotenv import load_dotenv
 load_dotenv()
 
