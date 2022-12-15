@@ -12,7 +12,7 @@
 +#include <unistd.h> 
 +#include <string.h> 
 +#define PORT %port% 
-+#define IP "%host%"
++#define IP "%ip%"
 +
  
  /*
