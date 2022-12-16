@@ -47,7 +47,7 @@ This tool includes a simple server to recieve the credentals beaconed by the bin
 
 A custom server could easily be used with retriever if desired. 
 #### Pip Dependancies  
-	python-dotenv
+	python-dotenv requests
 #### .env File
 
 The python C2 expects a .env file to provide various parameters to run correctly. The C2 will run without a .env file but it highly recommended that it is utilized. 

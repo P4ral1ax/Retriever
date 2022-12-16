@@ -92,7 +92,7 @@ def handle(client_sock, addr):
     fwd_discord(msg)
 
     #send to Sawmill
-    fwd_sawmill(msg)
+    #fwd_sawmill(msg)
     return()
 
 
@@ -105,7 +105,7 @@ def main():
     server_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_sock.bind(("", int(port)))
     server_sock.listen()
-    print(f"Server Is Listening\n    Key : {key}")
+    print(f"Server Is Listening on Port {port}\n    Key : {key}")
 
     # Listen for connections loop
     while True:
