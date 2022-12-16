@@ -11,6 +11,7 @@ Ubuntu - 18.04+ <br />Centos - 8+ <br />Debian - 11+ <br />Arch - ???
 This is intended for red teaming in a competition environment.<br><br>
 
 ## Build Instructions
+Build binaries on the same operating system that it will be deployed on to reduce risk of issues with binary running. It is highly recommended you match the version as closely as possible.
 ### Dependancies
 The dependancies for this project are listed below. There are also prepared commands to install dependancies using different package managers and distros. 
 	
