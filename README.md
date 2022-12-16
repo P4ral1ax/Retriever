@@ -8,8 +8,8 @@ This is a basic Linux binary shim method on the `passwd` binary from the shadow 
 Ubuntu - 18.04+ <br />Centos - 8+ <br />Debian - 11+ <br />Arch - ???  
 
 #### What is this intended for 
-This is intended for red teaming in a competition environment.
-<br/>
+This is intended for red teaming in a competition environment.<br><br>
+
 ## Build Instructions
 ### Dependancies
 The dependancies for this project are listed below. There are also prepared commands to install dependancies using different package managers and distros. 
@@ -40,9 +40,8 @@ Parameter definitions :
 - **XOR Password**: The password used to encrypt the credentials 
 
 ### Install
-To install the implant it is easy as replacing the original `passwd` binary on the system with the shimmed binary. Common location for this binary is `/usr/bin/passwd` and `/bin/passwd`.
-  
-<br>
+To install the implant it is easy as replacing the original `passwd` binary on the system with the shimmed binary. Common location for this binary is `/usr/bin/passwd` and `/bin/passwd`. <br><br>
+
 ## Using the Python C2
 This tool includes a simple server to recieve the credentals beaconed by the binary. This includes XOR decryption, parsing, and forwarding to a Discord and Sawmill webhook. 
 
