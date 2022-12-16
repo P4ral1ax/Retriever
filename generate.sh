@@ -19,11 +19,8 @@ ip=$1
 port=$2
 interface=$3
 key=$4
-echo -ne " IP : ${ip}\n Port : ${port}\n Interface : ${interface}\n XOR Key : ${key}\nConfirm these settings [y/n] : "
-read pass
-if [[ $pass == n ]]; then
-    exit 0
-fi
+echo -ne "==Parameters Chosen==\n  IP : ${ip}\n  Port : ${port}\n  Interface : ${interface}\n  XOR Key : ${key}\n\nContinuing in 5 Seconds\nCtrl+c to Cancel : "
+sleep 5
 
 ## Get dependancies and autogen ## (DEPRECIATED FOR COMPATABILITY)
 #sudo apt install -y make autoconf autopoint libtool xsltproc bison byacc python3-pip
