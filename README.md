@@ -42,7 +42,7 @@ Parameter definitions :
 ### Install
 To install the implant it is easy as replacing the original `passwd` binary on the system with the shimmed binary. Common location for this binary is `/usr/bin/passwd` and `/bin/passwd`.
   
-<br/>
+
 ## Using the Python C2
 This tool includes a simple server to recieve the credentals beaconed by the binary. This includes XOR decryption, parsing, and forwarding to a Discord and Sawmill webhook. 
 
