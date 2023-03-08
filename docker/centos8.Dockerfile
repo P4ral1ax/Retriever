@@ -8,7 +8,9 @@ ARG XOR_KEY="bingus"
 ARG DEBIAN_FRONTEND=noninteractive
 
 # Install Dependancies
-RUN apt-get update && apt-get install -y git make wget autoconf autopoint libtool xsltproc bison
+RUN sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-*
+RUN sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*
+RUN dnf install -y git make autoconf gettext-devel libtool libxslt wget bison
 
 # Clone and run script
 RUN git clone https://github.com/p4ral1ax/retriever

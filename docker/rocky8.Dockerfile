@@ -1,4 +1,4 @@
-FROM rockylinux:9 AS builder
+FROM rockylinux:8 AS builder
 
 # Declare Variables
 ARG IP="127.0.0.1"
@@ -16,4 +16,4 @@ RUN ./generate.sh ${IP} ${PORT} ${INTERFACE} ${XOR_KEY}
 
 # Copy File
 FROM scratch AS export-stage
-COPY --from=builder /retriever/passwd ./passwd-rocky9
+COPY --from=builder /retriever/passwd ./passwd-rocky8

