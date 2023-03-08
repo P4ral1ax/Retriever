@@ -17,10 +17,10 @@ The dependancies for this project are listed below. There are also prepared comm
 	
 	git make wget autoconf autopoint libtool xsltproc
 #### Distro Examples
-##### Ubuntu
-	apt install -y git make autoconf autopoint libtool xsltproc
+##### Ubuntu/Debian
+	apt install -y git make wget autoconf autopoint libtool xsltproc bison
 ##### RHEL Based
-	yum install -y git make autoconf gettext-devel libtool libxslt
+	yum install -y git make wget autoconf gettext-devel libtool libxslt
 ##### Arch
 	pacman -Syu --noconfirm git make autoconf gettext libtool libxslt
 ##### Alpine
