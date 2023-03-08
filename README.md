@@ -22,9 +22,9 @@ The dependancies for this project are listed below. There are also prepared comm
 ##### RHEL Based
 	yum install -y git make wget autoconf gettext-devel libtool libxslt
 ##### Arch
-	pacman -Syu --noconfirm git make autoconf gettext libtool libxslt
+	pacman -Syu --noconfirm git wget make autoconf gettext libtool libxslt
 ##### Alpine
-	apk add git make autoconf gettext-dev libtool libxslt
+	apk add git wget make autoconf gettext-dev libtool libxslt
 ### Run Build Script
 Clone the Retriever repository. The most up to date version is most likely the best one. 
 	
