@@ -49,7 +49,7 @@ cd shadow-4.13
 patch src/passwd.c ../passwd.patch 
 
 ## Make ##
-sudo make all 
+make all 
 cd ../
 cp shadow-4.13/src/passwd ./passwd
 chmod 4755 passwd 
