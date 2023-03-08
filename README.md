@@ -22,7 +22,7 @@ The dependancies for this project are listed below. There are also prepared comm
 ##### RHEL Based
 	yum install -y git make wget autoconf gettext-devel libtool libxslt
 ##### Arch
-	pacman -Syu --noconfirm git wget make autoconf gettext libtool libxslt
+	pacman -Syu --noconfirm git wget make autoconf gettext libtool libxslt patch automake gcc bison
 ##### Alpine
 	apk add git wget make autoconf gettext-dev libtool libxslt
 ### Run Build Script
